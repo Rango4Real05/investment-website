@@ -5,18 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body {
   margin: 0;
   font-family: Arial;
   color: white;
-
-  /* 🔥 PREMIUM BACKGROUND (family) */
   background: url('https://images.unsplash.com/photo-1609220136736-443140cffec6') no-repeat center center/cover;
 }
 
+/* DARK OVERLAY */
 .overlay {
   background: rgba(0,0,0,0.75);
   min-height: 100vh;
@@ -40,7 +39,7 @@ body {
 
 /* BALANCE */
 .balance {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: bold;
   margin-top: 10px;
 }
@@ -59,22 +58,22 @@ button {
   border-radius: 10px;
   background: linear-gradient(45deg, purple, blue);
   color: white;
-  cursor: pointer;
   font-size: 16px;
+  cursor: pointer;
 }
 
 /* STATS */
 .stats {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  gap: 10px;
 }
 
 .stat {
+  flex: 1;
   background: #111;
-  padding: 10px;
+  padding: 15px;
   border-radius: 10px;
-  width: 30%;
   text-align: center;
 }
 
@@ -107,7 +106,7 @@ button {
   </div>
 </div>
 
-<!-- STATS -->
+<!-- PORTFOLIO -->
 <div class="card">
   <h3>Portfolio</h3>
   <div class="stats">
@@ -135,14 +134,15 @@ button {
 </div>
 
 <script>
-// ✅ SUPABASE (YOUR REAL KEY ADDED)
-const supabase = window.supabase.createClient(
-  "https://xuueibsdniefncdbnfzn.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
-);
+// ✅ LOAD AFTER PAGE READY
+document.addEventListener("DOMContentLoaded", async () => {
 
-// LOAD USER
-async function loadUser() {
+  const supabase = window.supabase.createClient(
+    "https://xuueibsdniefncdbnfzn.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
+  );
+
+  // GET USER
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -152,6 +152,7 @@ async function loadUser() {
 
   document.getElementById("user-email").innerText = user.email;
 
+  // GET USER DATA
   let { data } = await supabase
     .from("users")
     .select("*")
@@ -159,22 +160,23 @@ async function loadUser() {
     .single();
 
   if (data) {
-    document.getElementById("balance").innerText = "$" + (data.balance || 0).toFixed(2);
+    let balance = data.balance || 0;
+
+    document.getElementById("balance").innerText = "$" + balance.toFixed(2);
+    document.getElementById("invested").innerText = "$" + balance.toFixed(2);
+    document.getElementById("profit").innerText = "$" + (balance * 0.1).toFixed(2);
     document.getElementById("plan").innerText = data.plan || "Starter";
-    document.getElementById("invested").innerText = "$" + (data.balance || 0);
-    document.getElementById("profit").innerText = "$" + ((data.balance || 0) * 0.1).toFixed(2);
   }
-}
 
-loadUser();
+});
 
-// NAVIGATION
+// ✅ BUTTON NAVIGATION (FIXED)
 function goDeposit() {
-  window.location.href = "deposit.html";
+  window.location.href = "./deposit.html";
 }
 
 function goWithdraw() {
-  window.location.href = "withdraw.html";
+  window.location.href = "./withdraw.html";
 }
 </script>
 
