@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b0f1a;
+  color: white;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.card {
+  background: #111827;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: green;
+  color: white;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Admin Deposit Panel</h2>
+
+<div id="deposits"></div>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://xuueibsdniefncdbnfzn.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
+);
+
+// LOAD DEPOSITS
+async function loadDeposits() {
+
+  let { data } = await supabase
+    .from("deposits")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  let container = document.getElementById("deposits");
+  container.innerHTML = "";
+
+  data.forEach(dep => {
+    container.innerHTML += `
+      <div class="card">
+        <p><strong>Email:</strong> ${dep.email}</p>
+        <p><strong>Amount:</strong> $${dep.amount}</p>
+        <p><strong>Status:</strong> ${dep.status}</p>
+
+        ${dep.status === "pending" 
+          ? `<button onclick="approve('${dep.id}', '${dep.email}', ${dep.amount})">Approve</button>` 
+          : `<span style="color:lime;">Approved</span>`}
+      </div>
+    `;
+  });
+}
+
+// APPROVE DEPOSIT
+async function approve(id, email, amount) {
+
+  // 1. UPDATE STATUS
+  await supabase
+    .from("deposits")
+    .update({ status: "approved" })
+    .eq("id", id);
+
+  // 2. GET USER
+  let { data } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  // 3. UPDATE BALANCE
+  let newBalance = (data.balance || 0) + amount;
+
+  await supabase
+    .from("users")
+    .update({ balance: newBalance })
+    .eq("email", email);
+
+  alert("Deposit approved & balance updated!");
+
+  loadDeposits();
+}
+
+// INIT
+loadDeposits();
+</script>
+
+</body>
+</html>
