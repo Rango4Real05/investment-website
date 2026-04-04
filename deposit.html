@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deposit</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
@@ -13,92 +12,59 @@ body {
   margin: 0;
   font-family: Arial;
   color: white;
-  text-align: center;
 
-  /* 🔥 NEW BACKGROUND (woman + child smiling) */
+  /* 🔥 BACKGROUND (mother & child) */
   background: url('https://images.unsplash.com/photo-1604881991720-f91add269bed') no-repeat center center/cover;
 }
 
+/* DARK OVERLAY */
 .overlay {
   background: rgba(0,0,0,0.75);
   min-height: 100vh;
   padding: 20px;
 }
 
-.container {
-  max-width: 400px;
-  margin: auto;
-  background: rgba(0,0,0,0.65);
+/* CARD */
+.card {
+  background: #0b1b3b;
+  border-radius: 20px;
   padding: 20px;
-  border-radius: 15px;
+  margin-bottom: 25px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
 }
 
-input, select {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
+h2 {
   margin-bottom: 15px;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: linear-gradient(45deg, purple, blue);
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.wallet-box {
-  display: flex;
-  justify-content: space-between;
-  background: #111;
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-.copy-btn {
-  background: #444;
-  padding: 5px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.copy-btn.copied {
-  background: green;
-}
-
-/* 🔥 SMALLER QR */
+/* QR */
 .qr {
   margin: 15px auto;
 }
 
-/* 🔥 POPUP */
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-box {
-  background: #111;
-  padding: 25px;
+/* WALLET BOX */
+.wallet {
+  background: #020d22;
+  padding: 10px;
   border-radius: 12px;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
-.popup-box button {
-  margin-top: 15px;
+/* COPY BUTTON */
+.copy {
+  background: #1a2a5c;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.copy.copied {
+  background: green;
 }
 </style>
 </head>
@@ -106,114 +72,80 @@ button {
 <body>
 
 <div class="overlay">
-<div class="container">
 
-<h2>Deposit Funds</h2>
-
-<input type="number" id="amount" placeholder="Enter amount ($)">
-
-<select id="coin">
-  <option value="btc">Bitcoin</option>
-  <option value="eth">Ethereum</option>
-  <option value="usdt">USDT</option>
-  <option value="sol">Solana</option>
-</select>
-
-<div id="qr" class="qr"></div>
-
-<div class="wallet-box">
-  <span id="walletAddress"></span>
-  <span class="copy-btn" onclick="copyWallet(this)">Copy</span>
-</div>
-
-<button onclick="submitDeposit()">I have sent the payment</button>
-
-</div>
-</div>
-
-<!-- 🔥 POPUP -->
-<div class="popup" id="popup">
-  <div class="popup-box">
-    <h3>Payment Received</h3>
-    <p>Your balance will be updated once payment is confirmed.</p>
-    <button onclick="goDashboard()">OK</button>
+<!-- BTC -->
+<div class="card">
+  <h2>Bitcoin (BTC)</h2>
+  <div id="btc-qr" class="qr"></div>
+  <div class="wallet">
+    <span id="btc-text">bc1qm4vsnpd0d8vw8djkkuncq2smmwdzgkd50dka42</span>
+    <span class="copy" onclick="copy(this, 'btc-text')">Copy</span>
   </div>
 </div>
 
+<!-- ETH -->
+<div class="card">
+  <h2>Ethereum (ETH)</h2>
+  <div id="eth-qr" class="qr"></div>
+  <div class="wallet">
+    <span id="eth-text">0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598</span>
+    <span class="copy" onclick="copy(this, 'eth-text')">Copy</span>
+  </div>
+</div>
+
+<!-- USDT -->
+<div class="card">
+  <h2>USDT (ERC20)</h2>
+  <div id="usdt-qr" class="qr"></div>
+  <div class="wallet">
+    <span id="usdt-text">0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598</span>
+    <span class="copy" onclick="copy(this, 'usdt-text')">Copy</span>
+  </div>
+</div>
+
+<!-- TRON -->
+<div class="card">
+  <h2>TRON (TRX)</h2>
+  <div id="trx-qr" class="qr"></div>
+  <div class="wallet">
+    <span id="trx-text">TMBFUvhf1dYsP4HWEgYwQTnWkXoPN1oEBa</span>
+    <span class="copy" onclick="copy(this, 'trx-text')">Copy</span>
+  </div>
+</div>
+
+<!-- SOL -->
+<div class="card">
+  <h2>Solana (SOL)</h2>
+  <div id="sol-qr" class="qr"></div>
+  <div class="wallet">
+    <span id="sol-text">9bUR9HJCNhBsQr1mmVotYxPpkGAtkFKkYkQziYiNvZki</span>
+    <span class="copy" onclick="copy(this, 'sol-text')">Copy</span>
+  </div>
+</div>
+
+</div>
+
 <script>
-// 🔥 SUPABASE
-const supabase = window.supabase.createClient(
-  "https://xuueibsdniefncdbnfzn.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
-);
+// QR GENERATOR
+new QRCode(document.getElementById("btc-qr"), { text: "bc1qm4vsnpd0d8vw8djkkuncq2smmwdzgkd50dka42", width: 140, height: 140 });
+new QRCode(document.getElementById("eth-qr"), { text: "0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598", width: 140, height: 140 });
+new QRCode(document.getElementById("usdt-qr"), { text: "0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598", width: 140, height: 140 });
+new QRCode(document.getElementById("trx-qr"), { text: "TMBFUvhf1dYsP4HWEgYwQTnWkXoPN1oEBa", width: 140, height: 140 });
+new QRCode(document.getElementById("sol-qr"), { text: "9bUR9HJCNhBsQr1mmVotYxPpkGAtkFKkYkQziYiNvZki", width: 140, height: 140 });
 
-// WALLET ADDRESSES
-const wallets = {
-  btc: "bc1qm4vsnpd0d8vw8djkkuncq2smmwdzgkd50dka42",
-  eth: "0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598",
-  usdt: "0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598",
-  sol: "GxBQcvYBEsFjn2k9gotk9ScsWZeucGNYwNaLutc2gz41"
-};
-
-// UPDATE QR + WALLET
-function updateWallet() {
-  let coin = document.getElementById("coin").value;
-  let address = wallets[coin];
-
-  document.getElementById("walletAddress").innerText = address;
-
-  document.getElementById("qr").innerHTML = "";
-  new QRCode(document.getElementById("qr"), {
-    text: address,
-    width: 140,   // 🔥 SMALLER
-    height: 140
-  });
-}
-
-document.getElementById("coin").addEventListener("change", updateWallet);
-updateWallet();
-
-// COPY
-function copyWallet(btn) {
-  let text = document.getElementById("walletAddress").innerText;
+// COPY FUNCTION
+function copy(btn, id) {
+  let text = document.getElementById(id).innerText;
 
   navigator.clipboard.writeText(text);
 
-  btn.innerText = "Copied!";
+  btn.innerText = "Copied";
   btn.classList.add("copied");
 
   setTimeout(() => {
     btn.innerText = "Copy";
     btn.classList.remove("copied");
   }, 2000);
-}
-
-// SUBMIT
-async function submitDeposit() {
-  let amount = document.getElementById("amount").value;
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    alert("Login first");
-    return;
-  }
-
-  await supabase.from("deposits").insert([
-    {
-      email: user.email,
-      amount: amount,
-      status: "pending"
-    }
-  ]);
-
-  // 🔥 SHOW POPUP
-  document.getElementById("popup").style.display = "flex";
-}
-
-// REDIRECT
-function goDashboard() {
-  window.location.href = "dashboard.html";
 }
 </script>
 
