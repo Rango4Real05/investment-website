@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upgrade Plan</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      padding: 40px;
+    }
+
+    .plans {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+    }
+
+    .btn {
+      background: gold;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Upgrade Your Plan 💎</h1>
+
+<div class="plans">
+
+  <div class="card">
+    <h3>Starter</h3>
+    <p>Free</p>
+    <p>2% Daily</p>
+    <button class="btn" onclick="selectPlan('Starter')">Select</button>
+  </div>
+
+  <div class="card">
+    <h3>Premium</h3>
+    <p>$100 Required</p>
+    <p>5% Daily</p>
+    <button class="btn" onclick="payAndUpgrade('Premium',100)">Upgrade</button>
+  </div>
+
+  <div class="card">
+    <h3>VIP</h3>
+    <p>$300 Required</p>
+    <p>10% Daily</p>
+    <button class="btn" onclick="payAndUpgrade('VIP',300)">Go VIP</button>
+  </div>
+
+</div>
+
+<p id="message"></p>
+
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://xuueibsdniefncdbnfzn.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+);
+
+const { data: { user } } = await supabase.auth.getUser();
+
+if (!user) {
+  alert("Login first");
+  window.location.href = "login.html";
+}
+
+// Free plan
+window.selectPlan = async function(plan) {
+  await supabase.from("users")
+    .update({ plan: plan, plan_status: "active" })
+    .eq("email", user.email);
+
+  document.getElementById("message").innerText = "Starter activated ✅";
+
+  setTimeout(() => window.location.href = "dashboard.html", 1500);
+};
+
+// Paid plans
+window.payAndUpgrade = async function(plan, price) {
+
+  const { data } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", user.email)
+    .single();
+
+  if (data.balance < price) {
+    alert("Deposit funds first");
+    return;
+  }
+
+  let newBalance = data.balance - price;
+
+  await supabase.from("users")
+    .update({
+      balance: newBalance,
+      plan: plan,
+      plan_status: "active"
+    })
+    .eq("email", user.email);
+
+  document.getElementById("message").innerText =
+    plan + " activated ✅";
+
+  setTimeout(() => window.location.href = "dashboard.html", 1500);
+};
+</script>
+
+</body>
+</html>

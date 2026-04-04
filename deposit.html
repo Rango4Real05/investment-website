@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Deposit</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:url("https://images.unsplash.com/photo-1607746882042-944635dfe10e") no-repeat center center fixed;
+  background-size:cover;
+  color:white;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.75);
+  z-index:-1;
+}
+
+.container{
+  max-width:400px;
+  margin:50px auto;
+  background:rgba(0,0,0,0.9);
+  padding:25px;
+  border-radius:15px;
+  text-align:center;
+}
+
+input, select{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  border-radius:6px;
+}
+
+.btn{
+  width:100%;
+  padding:12px;
+  background:gold;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.qr img{
+  width:200px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+}
+
+.address{
+  margin-top:10px;
+  font-size:13px;
+  word-break:break-all;
+  color:#00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Deposit Crypto 💰</h2>
+
+  <input id="amount" placeholder="Enter amount">
+
+  <select id="method" onchange="showWallet()">
+    <option value="">Select Crypto</option>
+    <option value="btc">Bitcoin (BTC)</option>
+    <option value="eth">Ethereum (ETH)</option>
+    <option value="usdt">USDT (ERC20)</option>
+    <option value="sol">Solana (SOL)</option>
+  </select>
+
+  <div id="qrBox"></div>
+
+  <div class="address" id="address"></div>
+
+  <button class="btn" onclick="copyAddress()">Copy Wallet Address</button>
+
+  <p style="margin-top:10px;color:#ccc;">
+    Send your payment to this address.<br>
+    Your balance will update after confirmation.
+  </p>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://xuueibsdniefncdbnfzn.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+);
+
+let currentAddress = "";
+
+// 🔥 SHOW WALLET + QR (NEW API)
+function showWallet(){
+  let method = document.getElementById("method").value;
+
+  let wallets = {
+    btc: "bc1qm4vsnpd0d8vw8djkkuncq2smmwdzgkd50dka42",
+    eth: "0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598",
+    usdt: "0x6f9C7147fE1557fd02636fceF8AF7Fe4C7D97598",
+    sol: "GxBQcvYBEsFjn2k9gotk9ScsWZeucGNYwNaLutc2gz41"
+  };
+
+  currentAddress = wallets[method];
+
+  if(!currentAddress){
+    document.getElementById("qrBox").innerHTML = "";
+    document.getElementById("address").innerText = "";
+    return;
+  }
+
+  // ✅ NEW WORKING QR API
+  let qr = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(currentAddress);
+
+  document.getElementById("qrBox").innerHTML =
+    `<div class="qr"><img src="${qr}" /></div>`;
+
+  document.getElementById("address").innerText = currentAddress;
+}
+
+// 🔥 COPY (WORKS ON WEB)
+function copyAddress(){
+  if(!currentAddress){
+    alert("Select crypto first");
+    return;
+  }
+
+  navigator.clipboard.writeText(currentAddress)
+    .then(()=> alert("Copied ✅"))
+    .catch(()=>{
+      let textarea = document.createElement("textarea");
+      textarea.value = currentAddress;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      alert("Copied ✅");
+    });
+}
+</script>
+
+</body>
+</html>

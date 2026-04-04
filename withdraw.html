@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Withdraw</title>
+
+  <style>
+    body { background:#0f172a; color:white; text-align:center; font-family:Arial; }
+
+    .box {
+      background:rgba(30,41,59,0.6);
+      padding:20px;
+      border-radius:12px;
+      margin:50px auto;
+      width:300px;
+    }
+
+    input {
+      width:90%;
+      padding:10px;
+      margin:10px;
+    }
+
+    .btn {
+      background:linear-gradient(gold,orange);
+      padding:10px;
+      border:none;
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Withdraw Funds</h2>
+
+  <input id="amount" placeholder="Amount">
+  <input id="wallet" placeholder="Wallet Address">
+
+  <button class="btn" onclick="withdraw()">Submit</button>
+
+  <p id="msg"></p>
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://xuueibsdniefncdbnfzn.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
+);
+
+const { data:{user} } = await supabase.auth.getUser();
+
+window.withdraw = async () => {
+  let amount = document.getElementById("amount").value;
+  let wallet = document.getElementById("wallet").value;
+
+  let { error } = await supabase.from("withdrawals").insert([
+    { email:user.email, amount, wallet }
+  ]);
+
+  document.getElementById("msg").innerText =
+    error ? error.message : "Request submitted ✅";
+};
+</script>
+
+</body>
+</html>
