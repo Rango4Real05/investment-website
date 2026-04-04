@@ -1,84 +1,181 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
 
-  <style>
-    body { background:#0f172a; color:white; font-family:Arial; }
-    .container { padding:20px; }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-    .card {
-      background:rgba(30,41,59,0.6);
-      padding:20px;
-      border-radius:12px;
-      margin:10px 0;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  color: white;
 
-    .btn {
-      background:linear-gradient(gold,orange);
-      padding:10px;
-      border:none;
-      margin:5px;
-      cursor:pointer;
-    }
+  /* 🔥 PREMIUM BACKGROUND (family) */
+  background: url('https://images.unsplash.com/photo-1609220136736-443140cffec6') no-repeat center center/cover;
+}
 
-    .balance {
-      font-size:28px;
-      color:gold;
-    }
-  </style>
+.overlay {
+  background: rgba(0,0,0,0.75);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* CARD */
+.card {
+  background: rgba(0,0,0,0.7);
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+/* BALANCE */
+.balance {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* BUTTONS */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, purple, blue);
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.stat {
+  background: #111;
+  padding: 10px;
+  border-radius: 10px;
+  width: 30%;
+  text-align: center;
+}
+
+/* ACTIVITY */
+.activity {
+  font-size: 14px;
+  opacity: 0.9;
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="overlay">
 
-<h1>Dashboard</h1>
+<!-- HEADER -->
+<div class="header">
+  <h2>Dashboard</h2>
+  <span id="user-email">Loading...</span>
+</div>
 
+<!-- BALANCE -->
 <div class="card">
-  <p id="user-email"></p>
-  <h2 id="balance" class="balance">$0</h2>
-  <p id="plan"></p>
+  <h3>Total Balance</h3>
+  <div class="balance" id="balance">$0.00</div>
+
+  <div class="actions">
+    <button onclick="goDeposit()">Deposit</button>
+    <button onclick="goWithdraw()">Withdraw</button>
+  </div>
 </div>
 
+<!-- STATS -->
 <div class="card">
-  <button class="btn" onclick="goDeposit()">Deposit</button>
-  <button class="btn" onclick="goWithdraw()">Withdraw</button>
-  <button class="btn" onclick="logout()">Logout</button>
+  <h3>Portfolio</h3>
+  <div class="stats">
+    <div class="stat">
+      <p>Profit</p>
+      <strong id="profit">$0</strong>
+    </div>
+    <div class="stat">
+      <p>Invested</p>
+      <strong id="invested">$0</strong>
+    </div>
+    <div class="stat">
+      <p>Plan</p>
+      <strong id="plan">Starter</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVITY -->
+<div class="card">
+  <h3>Recent Activity</h3>
+  <div class="activity">No recent transactions yet</div>
 </div>
 
 </div>
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabase = createClient(
+<script>
+// ✅ SUPABASE (YOUR REAL KEY ADDED)
+const supabase = window.supabase.createClient(
   "https://xuueibsdniefncdbnfzn.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
 );
 
-const { data:{user} } = await supabase.auth.getUser();
+// LOAD USER
+async function loadUser() {
+  const { data: { user } } = await supabase.auth.getUser();
 
-if(user){
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
   document.getElementById("user-email").innerText = user.email;
 
   let { data } = await supabase
     .from("users")
     .select("*")
-    .eq("email",user.email)
+    .eq("email", user.email)
     .single();
 
-  document.getElementById("balance").innerText = "$"+data.balance;
-  document.getElementById("plan").innerText = "Plan: "+data.plan;
+  if (data) {
+    document.getElementById("balance").innerText = "$" + (data.balance || 0).toFixed(2);
+    document.getElementById("plan").innerText = data.plan || "Starter";
+    document.getElementById("invested").innerText = "$" + (data.balance || 0);
+    document.getElementById("profit").innerText = "$" + ((data.balance || 0) * 0.1).toFixed(2);
+  }
 }
 
-window.goDeposit=()=>window.location.href="deposit.html";
-window.goWithdraw=()=>window.location.href="withdraw.html";
+loadUser();
 
-window.logout=async()=>{
-  await supabase.auth.signOut();
-  window.location.href="login.html";
-};
+// NAVIGATION
+function goDeposit() {
+  window.location.href = "deposit.html";
+}
+
+function goWithdraw() {
+  window.location.href = "withdraw.html";
+}
 </script>
 
 </body>
