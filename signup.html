@@ -1,73 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
 
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-      padding-top: 100px;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  color: white;
+  background: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e') no-repeat center center/cover;
+}
 
-    input {
-      padding: 10px;
-      margin: 10px;
-      width: 250px;
-    }
+/* OVERLAY */
+.overlay {
+  background: rgba(0,0,0,0.8);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    button {
-      padding: 10px 20px;
-      background: gold;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+/* FORM BOX */
+.form-box {
+  background: rgba(0,0,0,0.7);
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  box-shadow: 0 0 20px rgba(255,215,0,0.2);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* INPUTS */
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, gold, orange);
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
 </head>
 
 <body>
 
-<h1>Create Account</h1>
+<div class="overlay">
 
-<input type="email" id="email" placeholder="Email"><br>
-<input type="password" id="password" placeholder="Password"><br>
+<div class="form-box">
+  <h2>Create Account</h2>
 
-<button onclick="signup()">Sign Up</button>
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
 
-<p id="message"></p>
+  <!-- PLAN SELECT -->
+  <select id="plan">
+    <option value="Starter">Starter ($50)</option>
+    <option value="Basic">Basic ($100)</option>
+    <option value="Premium">Premium ($200)</option>
+  </select>
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <button onclick="signup()">Create Account</button>
+</div>
 
-const supabase = createClient(
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// SUPABASE
+const supabase = window.supabase.createClient(
   "https://xuueibsdniefncdbnfzn.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
 );
 
-window.signup = async function () {
+// SIGNUP FUNCTION
+async function signup() {
+
+  const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+  const plan = document.getElementById("plan").value;
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password
+  if (!name || !email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  // CREATE AUTH USER
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password
   });
 
   if (error) {
-    document.getElementById("message").innerText = error.message;
-  } else {
-
-    // create user record
-    await supabase.from("users").insert([
-      { email, balance: 0, plan: "Starter", plan_status: "active" }
-    ]);
-
-    document.getElementById("message").innerText =
-      "Account created ✅ Go login";
+    alert(error.message);
+    return;
   }
-};
+
+  // SAVE USER DATA
+  await supabase.from("users").insert([
+    {
+      email: email,
+      name: name,
+      plan: plan,
+      balance: 0
+    }
+  ]);
+
+  alert("Account created successfully!");
+
+  window.location.href = "login.html";
+}
 </script>
 
 </body>

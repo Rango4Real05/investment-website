@@ -1,137 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Upgrade Plan</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Plans</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  color: white;
+  background: url('https://images.unsplash.com/photo-1621501103258-3e135c8c1d50') no-repeat center center/cover;
+}
 
-    .container {
-      padding: 40px;
-    }
+/* OVERLAY */
+.overlay {
+  background: rgba(0,0,0,0.8);
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
 
-    .plans {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+/* HEADER */
+h1 {
+  margin-bottom: 30px;
+}
 
-    .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 10px;
-      width: 250px;
-    }
+/* PLANS GRID */
+.plans {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 
-    .btn {
-      background: gold;
-      color: black;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-  </style>
+/* CARD */
+.plan {
+  background: rgba(0,0,0,0.7);
+  padding: 20px;
+  border-radius: 15px;
+  width: 260px;
+  box-shadow: 0 0 20px rgba(255,215,0,0.2);
+  transition: 0.3s;
+}
+
+.plan:hover {
+  transform: scale(1.05);
+}
+
+/* PRICE */
+.price {
+  font-size: 30px;
+  color: gold;
+  margin: 10px 0;
+}
+
+/* FEATURES */
+.features {
+  font-size: 14px;
+  margin: 15px 0;
+  line-height: 1.6;
+}
+
+/* BUTTON */
+button {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, gold, orange);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* HIGHLIGHT PREMIUM */
+.premium {
+  border: 2px solid gold;
+  box-shadow: 0 0 25px gold;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .plans {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="overlay">
 
-<h1>Upgrade Your Plan 💎</h1>
+<h1>Choose Your Investment Plan</h1>
 
 <div class="plans">
 
-  <div class="card">
-    <h3>Starter</h3>
-    <p>Free</p>
-    <p>2% Daily</p>
-    <button class="btn" onclick="selectPlan('Starter')">Select</button>
+  <!-- STARTER -->
+  <div class="plan">
+    <h2>Starter</h2>
+    <div class="price">$50</div>
+
+    <div class="features">
+      ✔ 2% Daily Profit<br>
+      ✔ Minimum Risk<br>
+      ✔ 24/7 Support<br>
+      ✔ Instant Activation
+    </div>
+
+    <button onclick="selectPlan('Starter')">Get Started</button>
   </div>
 
-  <div class="card">
-    <h3>Premium</h3>
-    <p>$100 Required</p>
-    <p>5% Daily</p>
-    <button class="btn" onclick="payAndUpgrade('Premium',100)">Upgrade</button>
+  <!-- BASIC -->
+  <div class="plan">
+    <h2>Basic</h2>
+    <div class="price">$100</div>
+
+    <div class="features">
+      ✔ 3% Daily Profit<br>
+      ✔ Medium Risk<br>
+      ✔ Priority Support<br>
+      ✔ Faster Returns
+    </div>
+
+    <button onclick="selectPlan('Basic')">Get Started</button>
   </div>
 
-  <div class="card">
-    <h3>VIP</h3>
-    <p>$300 Required</p>
-    <p>10% Daily</p>
-    <button class="btn" onclick="payAndUpgrade('VIP',300)">Go VIP</button>
+  <!-- PREMIUM -->
+  <div class="plan premium">
+    <h2>Premium</h2>
+    <div class="price">$200</div>
+
+    <div class="features">
+      ✔ 5% Daily Profit<br>
+      ✔ High Returns<br>
+      ✔ VIP Support<br>
+      ✔ Maximum Growth
+    </div>
+
+    <button onclick="selectPlan('Premium')">Get Started</button>
   </div>
 
 </div>
 
-<p id="message"></p>
-
 </div>
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-const supabase = createClient(
+<script>
+// SUPABASE
+const supabase = window.supabase.createClient(
   "https://xuueibsdniefncdbnfzn.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
 );
 
-const { data: { user } } = await supabase.auth.getUser();
+// SELECT PLAN
+async function selectPlan(plan) {
 
-if (!user) {
-  alert("Login first");
-  window.location.href = "login.html";
-}
+  const { data: { user } } = await supabase.auth.getUser();
 
-// Free plan
-window.selectPlan = async function(plan) {
-  await supabase.from("users")
-    .update({ plan: plan, plan_status: "active" })
-    .eq("email", user.email);
-
-  document.getElementById("message").innerText = "Starter activated ✅";
-
-  setTimeout(() => window.location.href = "dashboard.html", 1500);
-};
-
-// Paid plans
-window.payAndUpgrade = async function(plan, price) {
-
-  const { data } = await supabase
-    .from("users")
-    .select("*")
-    .eq("email", user.email)
-    .single();
-
-  if (data.balance < price) {
-    alert("Deposit funds first");
+  if (!user) {
+    alert("Please login first");
+    window.location.href = "login.html";
     return;
   }
 
-  let newBalance = data.balance - price;
-
-  await supabase.from("users")
-    .update({
-      balance: newBalance,
-      plan: plan,
-      plan_status: "active"
-    })
+  await supabase
+    .from("users")
+    .update({ plan: plan })
     .eq("email", user.email);
 
-  document.getElementById("message").innerText =
-    plan + " activated ✅";
+  alert(plan + " plan activated!");
 
-  setTimeout(() => window.location.href = "dashboard.html", 1500);
-};
+  window.location.href = "dashboard.html";
+}
 </script>
 
 </body>
