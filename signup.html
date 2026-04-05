@@ -77,8 +77,8 @@ button {
     <option value="Premium">Premium ($200)</option>
   </select>
 
-  <!-- ✅ BUTTON WORKS -->
-  <button onclick="signup()">Create Account</button>
+  <!-- ✅ NO onclick (FIXED) -->
+  <button id="signupBtn">Create Account</button>
 </div>
 
 </div>
@@ -86,47 +86,52 @@ button {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// SUPABASE
-const supabase = window.supabase.createClient(
-  "https://xuueibsdniefncdbnfzn.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
-);
+document.addEventListener("DOMContentLoaded", function () {
 
-// ✅ FIXED BUTTON FUNCTION (GLOBAL)
-window.signup = async function () {
+  const supabase = window.supabase.createClient(
+    "https://xuueibsdniefncdbnfzn.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dWVpYnNkbmllZm5jZGJuZnpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzM2MzksImV4cCI6MjA5MDY0OTYzOX0.CemivJ22fNWnLpMUHZPUiZoH12cg-az7k95PtKMFzf4"
+  );
 
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const plan = document.getElementById("plan").value;
+  const btn = document.getElementById("signupBtn");
 
-  if (!name || !email || !password) {
-    alert("Please fill all fields");
-    return;
-  }
+  btn.addEventListener("click", async function () {
 
-  const { error } = await supabase.auth.signUp({
-    email: email,
-    password: password
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const plan = document.getElementById("plan").value;
+
+    if (!name || !email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    await supabase.from("users").insert([
+      {
+        email: email,
+        name: name,
+        plan: plan,
+        balance: 0
+      }
+    ]);
+
+    alert("Account created successfully!");
+    window.location.href = "dashboard.html";
+
   });
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  await supabase.from("users").insert([
-    {
-      email: email,
-      name: name,
-      plan: plan,
-      balance: 0
-    }
-  ]);
-
-  alert("Account created successfully!");
-  window.location.href = "login.html";
-};
+});
 </script>
 
 </body>
