@@ -13,7 +13,6 @@ body {
   background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb') no-repeat center center/cover;
 }
 
-/* OVERLAY */
 .overlay {
   background: rgba(0,0,0,0.75);
   min-height: 100vh;
@@ -37,19 +36,22 @@ body {
   cursor: pointer;
 }
 
-/* MARKET SLIDE */
+/* TICKER */
 .ticker {
-  display: flex;
   overflow: hidden;
   background: black;
   color: gold;
-  padding: 10px;
-  font-weight: bold;
-  gap: 40px;
-  animation: slide 20s linear infinite;
+  padding: 10px 0;
 }
 
-@keyframes slide {
+.ticker-track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll 40s linear infinite;
+  font-weight: bold;
+}
+
+@keyframes scroll {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
@@ -63,24 +65,17 @@ body {
   font-size: 40px;
 }
 
-.hero p {
-  max-width: 400px;
-}
-
 /* CALCULATOR */
 .calculator {
   position: absolute;
   top: 100px;
   right: 20px;
-
   width: 260px;
   padding: 15px;
-
   background: rgba(0,0,0,0.75);
   backdrop-filter: blur(10px);
-
   border-radius: 15px;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 0 20px rgba(255,215,0,0.3);
 }
 
 .calculator input {
@@ -121,6 +116,11 @@ body {
   text-align: center;
 }
 
+.stat h2 {
+  color: gold;
+  text-shadow: 0 0 10px gold;
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
   .calculator {
@@ -150,9 +150,17 @@ body {
   <button onclick="goPlans()">Plans</button>
 </div>
 
-<!-- MARKET -->
+<!-- LONG MARKET TICKER -->
 <div class="ticker">
-  BTC $67,492 | ETH $2,053 | Gold $2,350 | EUR/USD 1.08 | AAPL $180 | TSLA $240
+  <div class="ticker-track">
+    BTC $67,492 | ETH $2,053 | BNB $590 | SOL $145 | XRP $0.62 |
+    ADA $0.45 | DOGE $0.18 | DOT $7.20 | AVAX $35 | MATIC $0.85 |
+    LTC $92 | SHIB $0.00002 | TRX $0.12 | LINK $18 | ATOM $11 |
+    XLM $0.13 | NEAR $6.5 | ALGO $0.20 | FIL $8.2 | ICP $12 |
+    AAPL $180 | TSLA $240 | AMZN $175 | MSFT $410 | NVDA $880 |
+    META $490 | NFLX $600 | GOOG $150 | EUR/USD 1.08 | Gold $2350 |
+    BTC $67,492 | ETH $2,053 | BNB $590 | SOL $145
+  </div>
 </div>
 
 <!-- HERO -->
@@ -176,11 +184,11 @@ body {
 <!-- STATS -->
 <div class="stats">
   <div class="stat">
-    <h2>1212+</h2>
+    <h2>1500+</h2>
     <p>Users</p>
   </div>
   <div class="stat">
-    <h2>$2.4M</h2>
+    <h2>$6.5M</h2>
     <p>Paid Out</p>
   </div>
   <div class="stat">
