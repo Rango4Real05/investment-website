@@ -16,9 +16,6 @@ body {
 /* HEADER */
 .header {
   padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 /* CARD */
@@ -29,7 +26,7 @@ body {
   border-radius: 15px;
 }
 
-/* STATS GRID */
+/* STATS */
 .stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -42,7 +39,7 @@ body {
   border-radius: 12px;
 }
 
-/* BUTTON */
+/* BUTTONS */
 .btn {
   width: 100%;
   padding: 12px;
@@ -55,18 +52,23 @@ body {
 }
 
 /* WATCHLIST */
-.watchlist-item {
+.watchlist {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.item {
   display: flex;
   justify-content: space-between;
   padding: 10px;
   border-bottom: 1px solid #333;
 }
 
-/* PROFIT COLORS */
+/* COLORS */
 .green { color: #00ff9d; }
 .red { color: #ff4d4d; }
 
-/* BOTTOM NAV */
+/* NAV */
 .nav {
   position: fixed;
   bottom: 0;
@@ -74,7 +76,14 @@ body {
   background: #111827;
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
+  padding: 12px 0;
+  border-top: 1px solid #222;
+}
+
+.nav div {
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -95,17 +104,17 @@ body {
 <div class="stats">
 
   <div class="stat">
-    <h4>Portfolio Value</h4>
+    <h4>Portfolio</h4>
     <p>$7,560</p>
   </div>
 
   <div class="stat">
-    <h4>Total Invested</h4>
+    <h4>Invested</h4>
     <p>$8,334</p>
   </div>
 
   <div class="stat">
-    <h4>Total P/L</h4>
+    <h4>P/L</h4>
     <p class="red">-$774</p>
   </div>
 
@@ -116,7 +125,7 @@ body {
 
 </div>
 
-<!-- ACTIONS -->
+<!-- ACTION -->
 <div class="card">
   <button class="btn" id="depositBtn">Deposit</button>
   <button class="btn" id="withdrawBtn">Withdraw</button>
@@ -126,34 +135,68 @@ body {
 <div class="card">
   <h3>My Watchlist</h3>
 
-  <div class="watchlist-item">
-    <span>AAPL</span>
-    <span class="green">$248.45</span>
-  </div>
+  <div class="watchlist">
 
-  <div class="watchlist-item">
-    <span>MSFT</span>
-    <span class="green">$468.54</span>
-  </div>
+    <!-- 50 STOCKS -->
+    <div class="item"><span>AAPL</span><span class="green">$248</span></div>
+    <div class="item"><span>MSFT</span><span class="green">$468</span></div>
+    <div class="item"><span>TSLA</span><span class="red">$447</span></div>
+    <div class="item"><span>GOOGL</span><span class="green">$327</span></div>
+    <div class="item"><span>AMZN</span><span class="green">$239</span></div>
+    <div class="item"><span>NVDA</span><span class="green">$920</span></div>
+    <div class="item"><span>META</span><span class="green">$502</span></div>
+    <div class="item"><span>AMD</span><span class="green">$178</span></div>
+    <div class="item"><span>INTC</span><span class="red">$42</span></div>
+    <div class="item"><span>BABA</span><span class="red">$75</span></div>
 
-  <div class="watchlist-item">
-    <span>TSLA</span>
-    <span class="red">$447.65</span>
-  </div>
+    <div class="item"><span>ORCL</span><span class="green">$125</span></div>
+    <div class="item"><span>IBM</span><span class="green">$165</span></div>
+    <div class="item"><span>SHOP</span><span class="green">$88</span></div>
+    <div class="item"><span>UBER</span><span class="green">$72</span></div>
+    <div class="item"><span>LYFT</span><span class="red">$14</span></div>
+    <div class="item"><span>SNAP</span><span class="red">$12</span></div>
+    <div class="item"><span>PINS</span><span class="green">$33</span></div>
+    <div class="item"><span>TWTR</span><span class="green">$54</span></div>
+    <div class="item"><span>CRM</span><span class="green">$285</span></div>
+    <div class="item"><span>ADBE</span><span class="green">$570</span></div>
 
-  <div class="watchlist-item">
-    <span>GOOGL</span>
-    <span class="red">$327.99</span>
-  </div>
+    <div class="item"><span>PYPL</span><span class="green">$68</span></div>
+    <div class="item"><span>SQ</span><span class="green">$78</span></div>
+    <div class="item"><span>COIN</span><span class="green">$210</span></div>
+    <div class="item"><span>ROKU</span><span class="red">$65</span></div>
+    <div class="item"><span>DIS</span><span class="green">$102</span></div>
+    <div class="item"><span>NFLX</span><span class="green">$620</span></div>
+    <div class="item"><span>SPOT</span><span class="green">$290</span></div>
+    <div class="item"><span>SONY</span><span class="green">$98</span></div>
+    <div class="item"><span>V</span><span class="green">$275</span></div>
+    <div class="item"><span>MA</span><span class="green">$450</span></div>
 
+    <div class="item"><span>JPM</span><span class="green">$190</span></div>
+    <div class="item"><span>GS</span><span class="green">$420</span></div>
+    <div class="item"><span>BAC</span><span class="green">$36</span></div>
+    <div class="item"><span>C</span><span class="green">$65</span></div>
+    <div class="item"><span>WFC</span><span class="green">$58</span></div>
+
+    <div class="item"><span>XOM</span><span class="green">$115</span></div>
+    <div class="item"><span>CVX</span><span class="green">$160</span></div>
+    <div class="item"><span>BP</span><span class="green">$40</span></div>
+    <div class="item"><span>SHEL</span><span class="green">$70</span></div>
+
+    <div class="item"><span>BTC</span><span class="green">$67k</span></div>
+    <div class="item"><span>ETH</span><span class="green">$3k</span></div>
+    <div class="item"><span>SOL</span><span class="green">$150</span></div>
+    <div class="item"><span>BNB</span><span class="green">$580</span></div>
+    <div class="item"><span>XRP</span><span class="green">$0.62</span></div>
+
+  </div>
 </div>
 
-<!-- NAV -->
+<!-- NAVIGATION -->
 <div class="nav">
-  <span>🏠</span>
-  <span>💰</span>
-  <span>📊</span>
-  <span>👤</span>
+  <div onclick="goDash()">🏠<br>Dash</div>
+  <div onclick="goFund()">💰<br>Fund</div>
+  <div onclick="goLogs()">📊<br>Logs</div>
+  <div onclick="goProfile()">👤<br>Profile</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -166,7 +209,6 @@ const supabase = window.supabase.createClient(
 
 // LOAD USER
 async function loadUser() {
-
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -188,7 +230,7 @@ async function loadUser() {
 
 loadUser();
 
-// NAV BUTTONS
+// BUTTONS
 document.getElementById("depositBtn").onclick = () => {
   window.location.href = "deposit.html";
 };
@@ -196,6 +238,23 @@ document.getElementById("depositBtn").onclick = () => {
 document.getElementById("withdrawBtn").onclick = () => {
   window.location.href = "withdraw.html";
 };
+
+// NAVIGATION
+function goDash() {
+  window.location.href = "dashboard.html";
+}
+
+function goFund() {
+  window.location.href = "deposit.html";
+}
+
+function goLogs() {
+  alert("Logs coming next 🔥");
+}
+
+function goProfile() {
+  window.location.href = "profile.html";
+}
 </script>
 
 </body>
